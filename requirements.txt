@@ -2,6 +2,3 @@ pyTelegramBotAPI
 python-dotenv
 mistralai==1.9.2
 Pillow
-
-# установлена pip install mistralai==1.1.0 - работает без генерации картинок
-# установлена pip install mistralai==1.9.2 - работает без генерации картинок
