@@ -68,27 +68,31 @@ python3 bot.py
 
 ## 📁 Структура проекта
 
-.
-├── bot.py               # Основной код бота
-├── .env                 # Файл с токенами
-├── README.md            # Этот файл
-├── requirements.txt     # Список зависимостей
+| Файл/директория | Описание |
+|-----------------|-----------|
+| `bot.py`        | Основной код бота |
+| `.env`          | Файл с токенами |
+| `README.md`     | Этот файл |
+| `requirements.txt` | Список зависимостей |
 
 
 ## ⚠️ Возможные ошибки и решения
-Ошибка: "Mistral object has no attribute 'images'"
-Mistral AI не поддерживает метод images.generate в текущей версии SDK. Используется beta.agents для генерации изображений.
-Ошибка: "AuthenticationError"
-Проверьте правильность ввода TELEGRAM_BOT_TOKEN и MISTRAL_API_KEY в .env файле.
-Ошибка: "No module named 'mistralai'"
-Убедитесь, что вы установили библиотеку: pip install mistralai==1.9.2
+
+⚠️ **Ошибка: "Mistral object has no attribute 'images'"**  
+Mistral AI не поддерживает метод `images.generate` в текущей версии SDK. Используется `beta.agents`.
+
+⚠️ **Ошибка: "AuthenticationError"**  
+Проверьте правильность ввода `TELEGRAM_BOT_TOKEN` и `MISTRAL_API_KEY` в `.env` файле.
+
+⚠️ **Ошибка: "No module named 'mistralai'"**  
+Убедитесь, что вы установили библиотеку: `pip install mistralai==1.9.2`
 
 ## 📚 Полезные ссылки
 
-Telegram Bot API Documentation
-Mistral AI Documentation
-Telegram бот на Python — пример
-Как работать с .env и load_dotenv
+- [Telegram Bot API Documentation](https://core.telegram.org/bots/api )
+- [Mistral AI Documentation](https://docs.mistral.ai/ )
+- [Telegram бот на Python — пример](https://habr.com/ru/articles/750332/ )
+- [Как работать с .env и load_dotenv](https://habr.com/ru/articles/662406/ )
 
 ## 📝 Лицензия
 MIT License — см. файл LICENSE для деталей.
