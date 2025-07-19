@@ -156,7 +156,7 @@ def process_prompt_step(message):
     user_prompt = message.text
     bot.send_message(
         chat_id,
-        "Думаю над твоим запросом, Neo... Это может занять немного времени. Пожалуйста, подожди.",
+        "Обрабатываю запрос... Оставайся на связи, Neo",
     )
     try:
         # Шаг 1: Генерация текста поста

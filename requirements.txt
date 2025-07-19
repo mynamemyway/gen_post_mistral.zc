@@ -1,4 +1,4 @@
-pyTelegramBotAPI
-python-dotenv
+pyTelegramBotAPI==4.27.0
+python-dotenv==1.1.1
 mistralai==1.9.2
-Pillow
+Pillow==11.3.0
