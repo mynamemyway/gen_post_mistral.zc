@@ -204,27 +204,33 @@ def process_prompt_step(message):
             )
             return
 
-        # Шаг 2: Генерация изображения по тому же промпту - временно отключено из-за лимитов
-        # generated_image_bytes = generate_image_with_mistral(user_prompt)
+        # Шаг 2: Генерация изображения по тому же промпту
+        generated_image_bytes = generate_image_with_mistral(user_prompt)
 
         # Шаг 3: Отправка результата
-        # if generated_image_bytes:
-        #     image_file = io.BytesIO(generated_image_bytes)
-        #     image_file.name = "generated_image.png"
-        #
-        #     # Ограничение длины подписи до 1024 символов
-        #     caption_limit = 1024
-        #     truncated_caption = (
-        #         (generated_text[:caption_limit] + "...")
-        #         if len(generated_text) > caption_limit
-        #         else generated_text
-        #     )
-        #
-        #     bot.send_photo(chat_id, image_file, caption=truncated_caption)
-        #     logger.info(f"Пост и изображение отправлены пользователю {chat_id}")
-        # else:
-        bot.send_message(chat_id, generated_text)
-        logger.info(f"Пост отправлен пользователю {chat_id}")
+        if generated_image_bytes:
+            image_file = io.BytesIO(generated_image_bytes)
+            image_file.name = "generated_image.png"
+
+            # Ограничение длины подписи до 1024 символов
+            caption_limit = 1024
+            truncated_caption = (
+                (generated_text[:caption_limit] + "...")
+                if len(generated_text) > caption_limit
+                else generated_text
+            )
+
+            bot.send_photo(chat_id, image_file, caption=truncated_caption)
+            logger.info(f"Пост и изображение отправлены пользователю {chat_id}")
+        else:
+            bot.send_message(
+                chat_id,
+                f"Вот твой пост, {user_name}:\n\n{generated_text}\n\n"
+                "К сожалению, не удалось сгенерировать изображение. Возможно, превышен лимит запросов.",
+            )
+            logger.info(
+                f"Пост отправлен пользователю {chat_id}, изображение не сгенерировано."
+            )
 
     except Exception as e:
         logger.error(f"Непредвиденная ошибка в process_prompt_step: {e}")
