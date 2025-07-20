@@ -48,8 +48,8 @@ pip install -r requirements.txt
 3. Создайте файл .env в корне проекта:
 
 ```env
-TELEGRAM_BOT_TOKEN="ваш_telegram_bot_token"
-MISTRAL_API_KEY="ваш_mistral_api_key"
+TELEGRAM_BOT_TOKEN = "ВАШ Telegram Bot Token"
+MISTRAL_API_KEY= "ВАШ Mistral AI API Key"
 ```
 
 ## 🚀 Запуск бота
