@@ -52,8 +52,8 @@ pip install -r requirements.txt
 
 ```env
 TELEGRAM_BOT_TOKEN = "ВАШ Telegram Bot Token"
-MISTRAL_API_KEY= "ВАШ Mistral AI API Key"
-WEBHOOK_HOST=https://название-твоего-бота.onrender.com
+MISTRAL_API_KEY = "ВАШ Mistral AI API Key"
+WEBHOOK_HOST = https://название-твоего-бота.onrender.com
 ```
 
 ## 🚀 Запуск бота
