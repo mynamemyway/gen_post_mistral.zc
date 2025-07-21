@@ -54,14 +54,16 @@ user_temperature = {}
 # Инициализация Flask приложения
 app = Flask(__name__)
 
-# НОВЫЙ МОДУЛЬ ДЛЯ ПРОВЕРКИ АКТИВНОСТИ (anti-sleep for render)
-@app.route('/', methods=['GET'])
+
+# Модуль для проверки активности бота (anti-sleep bot for render)
+@app.route("/", methods=["GET"])
 def health_check():
     """
     Обработчик для проверки активности сервиса (health check).
     Возвращает 200 OK, чтобы внешние сервисы мониторинга знали, что приложение работает.
     """
-    return 'Bot is alive!', 200
+    return "Bot is alive!", 200
+
 
 @app.route(WEBHOOK_PATH, methods=["POST"])
 def webhook():
@@ -247,26 +249,26 @@ def process_prompt_step(message):
             return
 
         # Шаг 2: Генерация изображения по тому же промпту - временно отключено из-за лимитов
-        # generated_image_bytes = generate_image_with_mistral(user_prompt)
+        generated_image_bytes = generate_image_with_mistral(user_prompt)
 
         # Шаг 3: Отправка результата
-        # if generated_image_bytes:
-        #     image_file = io.BytesIO(generated_image_bytes)
-        #     image_file.name = "generated_image.png"
-        #
-        #     # Ограничение длины подписи до 1024 символов
-        #     caption_limit = 1024
-        #     truncated_caption = (
-        #         (generated_text[:caption_limit] + "...")
-        #         if len(generated_text) > caption_limit
-        #         else generated_text
-        #     )
-        #
-        #     bot.send_photo(chat_id, image_file, caption=truncated_caption)
-        #     logger.info(f"Пост и изображение отправлены пользователю {chat_id}")
-        # else:
-        bot.send_message(chat_id, generated_text)
-        logger.info(f"Пост отправлен пользователю {chat_id}")
+        if generated_image_bytes:
+            image_file = io.BytesIO(generated_image_bytes)
+            image_file.name = "generated_image.png"
+        
+            # Ограничение длины подписи в tg до 1024 символов
+            caption_limit = 1000
+            truncated_caption = (
+                (generated_text[:caption_limit] + "...")
+                if len(generated_text) > caption_limit
+                else generated_text
+            )
+        
+            bot.send_photo(chat_id, image_file, caption=truncated_caption)
+            logger.info(f"Пост и изображение отправлены пользователю {chat_id}")
+        else:
+            bot.send_message(chat_id, generated_text)
+            logger.info(f"Пост отправлен пользователю {chat_id}, изображение не сгенерировано.")
 
     except Exception as e:
         logger.error(f"Непредвиденная ошибка в process_prompt_step: {e}")

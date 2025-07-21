@@ -53,7 +53,7 @@ def generate_text_with_mistral(prompt: str, temperature: float) -> str:
                 },
                 {
                     "role": "user",
-                    "content": f"Напиши увлекательный пост, который вызывает эмоции на теме: '{prompt}', используй эмодзи и добавь хэштеги",
+                    "content": f"Напиши увлекательный пост до 1000 знаков, который вызывает эмоции на тему: '{prompt}', используй эмодзи и добавь 5 хэштегов",
                 },
             ],
             temperature=temperature,
@@ -213,9 +213,9 @@ def process_prompt_step(message):
             image_file.name = "generated_image.png"
 
             # Ограничение длины подписи до 1024 символов
-            caption_limit = 1024
+            caption_limit = 1000
             truncated_caption = (
-                (generated_text[:caption_limit] + "...")
+                (generated_text[: caption_limit - 3] + "...")
                 if len(generated_text) > caption_limit
                 else generated_text
             )
