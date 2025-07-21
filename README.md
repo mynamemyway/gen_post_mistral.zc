@@ -24,10 +24,12 @@
   - `pyTelegramBotAPI==4.27.0`
   - `python-dotenv==1.1.1`
   - `mistralai==1.9.2`
-  - `Pillow==11.3.0`
+  - `Pillow==11.3.0` [?]
+  - `Flask==3.0.0`
 - Учетные записи:
   - [Telegram Bot Token](https://core.telegram.org/bots/api )
   - [Mistral AI API Key](https://mistral.ai )
+  - [WEBHOOK_HOST](https://render.com )
 
 ---
 
@@ -51,6 +53,7 @@ pip install -r requirements.txt
 ```env
 TELEGRAM_BOT_TOKEN = "ВАШ Telegram Bot Token"
 MISTRAL_API_KEY= "ВАШ Mistral AI API Key"
+WEBHOOK_HOST=https://название-твоего-бота.onrender.com
 ```
 
 ## 🚀 Запуск бота

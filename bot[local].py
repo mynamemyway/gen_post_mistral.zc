@@ -5,7 +5,6 @@ from dotenv import load_dotenv
 from mistralai import Mistral
 import io
 import logging
-from flask import Flask, request  # Импортируем Flask для вебхуков
 
 # Настройка логирования
 logging.basicConfig(level=logging.INFO)
@@ -18,14 +17,7 @@ load_dotenv()
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 MISTRAL_API_KEY = os.getenv("MISTRAL_API_KEY")
 
-# Новые переменные для вебхука
-WEBHOOK_HOST = os.getenv("WEBHOOK_HOST")  # URL твоего приложения на Render
-WEBHOOK_PATH = (
-    f"/{TELEGRAM_BOT_TOKEN}"  # Путь для вебхука, используем токен для уникальности
-)
-WEBHOOK_URL = f"{WEBHOOK_HOST}{WEBHOOK_PATH}"
-
-# Проверка, что токены и WEBHOOK_HOST загружены
+# Проверка, что токены загружены
 if not TELEGRAM_BOT_TOKEN:
     logger.error(
         "Ошибка: Токен Telegram бота не найден в .env. Убедитесь, что TELEGRAM_BOT_TOKEN установлен."
@@ -34,11 +26,6 @@ if not TELEGRAM_BOT_TOKEN:
 if not MISTRAL_API_KEY:
     logger.error(
         "Ошибка: Ключ Mistral API не найден в .env. Убедитесь, что MISTRAL_API_KEY установлен."
-    )
-    exit(1)
-if not WEBHOOK_HOST:
-    logger.error(
-        "Ошибка: WEBHOOK_HOST не найден в .env. Убедитесь, что WEBHOOK_HOST установлен (URL вашего приложения Render)."
     )
     exit(1)
 
@@ -50,26 +37,6 @@ mistral_client = Mistral(api_key=MISTRAL_API_KEY)
 
 # Глобальная переменная для хранения температуры
 user_temperature = {}
-
-# Инициализация Flask приложения
-app = Flask(__name__)
-
-
-@app.route(WEBHOOK_PATH, methods=["POST"])
-def webhook():
-    """
-    Обработчик вебхука для получения обновлений от Telegram.
-    """
-    if request.headers.get("content-type") == "application/json":
-        json_string = request.get_data().decode("utf-8")
-        update = telebot.types.Update.de_json(json_string)
-        bot.process_new_updates([update])
-        return "", 200
-    else:
-        logger.warning(
-            f"Получен запрос с некорректным Content-Type: {request.headers.get('content-type')}"
-        )
-        return "", 403
 
 
 def generate_text_with_mistral(prompt: str, temperature: float) -> str:
@@ -267,15 +234,15 @@ def process_prompt_step(message):
 
 
 # --- Запуск бота ---
-if __name__ == "__main__":
-    logger.info("Удаляем предыдущие вебхуки...")
+def run_bot():
+    """
+    Запускает бота в режиме long polling.
+    """
+    logger.info("Бот запущен и готов принимать сообщения.")
     bot.remove_webhook()
-    # Устанавливаем новый вебхук
-    bot.set_webhook(url=WEBHOOK_URL)
-    logger.info(f"Вебхук установлен: {WEBHOOK_URL}")
+    logger.info("Вебхук успешно удален (если был).")
+    bot.polling(none_stop=True)
 
-    # Запускаем Flask приложение
-    # Render предоставит нам порт через переменную окружения PORT
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
-    logger.info(f"Flask приложение запущено на порту {port}")
+
+if __name__ == "__main__":
+    run_bot()
