@@ -54,6 +54,14 @@ user_temperature = {}
 # Инициализация Flask приложения
 app = Flask(__name__)
 
+# НОВЫЙ МОДУЛЬ ДЛЯ ПРОВЕРКИ АКТИВНОСТИ (anti-sleep for render)
+@app.route('/', methods=['GET'])
+def health_check():
+    """
+    Обработчик для проверки активности сервиса (health check).
+    Возвращает 200 OK, чтобы внешние сервисы мониторинга знали, что приложение работает.
+    """
+    return 'Bot is alive!', 200
 
 @app.route(WEBHOOK_PATH, methods=["POST"])
 def webhook():
