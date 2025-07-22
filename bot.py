@@ -89,7 +89,7 @@ def generate_text_with_mistral(prompt: str, temperature: float) -> str:
     """
     try:
         chat_response = mistral_client.chat.complete(
-            model="mistral-small-latest",
+            model="mistral-medium-latest",
             messages=[
                 {
                     "role": "system",
@@ -98,11 +98,11 @@ def generate_text_with_mistral(prompt: str, temperature: float) -> str:
                 {
                     "role": "user",
                     "content": f"Напиши увлекательный пост, который вызывает эмоции на тему: '{prompt}'. "
-                    "Объём поста строго ограничен 900 символами (включая пробелы и знаки препинания). "
+                    # "Объём поста строго ограничен 900 символами (включая пробелы и знаки препинания). "
                     "Пост должен начинаться с креативного текстового заголовка, обрамлённого эмодзи. "
                     "Используй по два разных эмодзи для каждого абзаца. "
-                    "В самом конце поста, после основного текста, добавь три релевантных хэштега через пробел. "
-                    "Убедись, что общий объём поста не превышает 900 символов.",
+                    "В самом конце поста, после основного текста, добавь три релевантных хэштега через пробел. ",
+                    # "Убедись, что общий объём поста не превышает 900 символов.",
                 },
             ],
             temperature=temperature,
@@ -133,14 +133,12 @@ def generate_image_with_mistral(prompt: str) -> bytes | None:
                 "top_p": 0.9,
             },
         )
-
         # Начало диалога с агентом
         response = mistral_client.beta.conversations.start(
             agent_id=image_agent.id,
             inputs=f"Создай уникальное и привлекательное изображение по запросу: '{prompt}'. "
             f"Изображение должно соответствовать теме поста. Сгенерируй только одно изображение.",
         )
-
         # Поиск file_id в ответе
         file_id = None
         if hasattr(response, "outputs"):
@@ -152,14 +150,12 @@ def generate_image_with_mistral(prompt: str) -> bytes | None:
                             break
                 if file_id:
                     break
-
         if not file_id:
             logger.error(
                 "Не удалось получить ID файла изображения из ответа Mistral. "
                 "Возможно, агент не сгенерировал изображение или структура ответа изменилась."
             )
             return None
-
         # Скачивание файла изображения
         file_bytes_stream = mistral_client.files.download(file_id=file_id)
         return file_bytes_stream.read()
@@ -178,7 +174,6 @@ def send_welcome(message):
     """
     user_id = message.from_user.id
     user_temperature[user_id] = 0.7  # Стандартная температура
-
     user_name = (
         message.from_user.first_name or message.from_user.username or "пользователь"
     )
@@ -188,7 +183,6 @@ def send_welcome(message):
         types.KeyboardButton("Креативный мастер"),
         types.KeyboardButton("Сбалансированный"),
     )
-
     bot.reply_to(
         message,
         f"Привет, {user_name}!\n"
@@ -213,14 +207,12 @@ def set_temperature(message):
     """
     user_id = message.from_user.id
     style = message.text
-
     temps = {
         "Логический": 0.1,
         "Креативный мастер": 1.0,
         "Сбалансированный": 0.6,
     }
     user_temperature[user_id] = temps[style]
-
     bot.reply_to(
         message,
         f"Выбран стиль: {style}\n"
@@ -242,7 +234,6 @@ def process_prompt_step(message):
         message.from_user.first_name or message.from_user.username or "пользователь"
     )
     temperature = user_temperature.get(user_id, 0.7)
-
     bot.send_message(
         chat_id,
         f"Уже генерирую твой пост, {user_name}🤍",
@@ -257,34 +248,33 @@ def process_prompt_step(message):
             )
             return
 
-        # Шаг 2: Генерация изображения по тому же промпту
-        generated_image_bytes = generate_image_with_mistral(user_prompt)
+        # Шаг 2: Генерация изображения по тому же промпту - закомментировано
+        # generated_image_bytes = generate_image_with_mistral(user_prompt)
 
         # Шаг 3: Отправка результата
-        if generated_image_bytes:
-            image_file = io.BytesIO(generated_image_bytes)
-            image_file.name = "generated_image.png"
-
-            # Ограничение длины подписи в tg до 1024 символов
-            caption_limit = 1000
-            truncated_caption = (
-                (generated_text[: caption_limit - 3] + "...")
-                if len(generated_text) > caption_limit
-                else generated_text
-            )
-
-            bot.send_photo(chat_id, image_file, caption=truncated_caption)
-            logger.info(f"Пост и изображение отправлены пользователю {chat_id}")
-        else:
-            bot.send_message(
-                chat_id,
-                f"{generated_text}\n"
-                "К сожалению, не удалось сгенерировать изображение. "
-                "Возможно, превышен лимит запросов.",
-            )
-            logger.info(
-                f"Пост отправлен пользователю {chat_id}, изображение не сгенерировано."
-            )
+        # if generated_image_bytes: # Этот блок больше не будет выполняться
+        #     image_file = io.BytesIO(generated_image_bytes)
+        #     image_file.name = "generated_image.png"
+        #     # Ограничение длины подписи в tg до 1024 символов
+        #     caption_limit = 1000
+        #     truncated_caption = (
+        #         (generated_text[: caption_limit - 3] + "...")
+        #         if len(generated_text) > caption_limit
+        #         else generated_text
+        #     )
+        #     bot.send_photo(chat_id, image_file, caption=truncated_caption)
+        #     logger.info(f"Пост и изображение отправлены пользователю {chat_id}")
+        # else: # Этот блок будет выполняться всегда, так как if-часть закомментирована
+        bot.send_message(
+            chat_id,
+            f"{generated_text}\n"
+            # "К сожалению, не удалось сгенерировать изображение. Возможно, превышен лимит запросов.",
+            "Генерация изображения временно отключена.",  # Изменено сообщение
+        )
+        logger.info(
+            # f"Пост отправлен пользователю {chat_id}, изображение не сгенерировано."
+            f"Пост отправлен пользователю {chat_id}, генерация изображения отключена."  # Изменено сообщение
+        )
 
     except Exception as e:
         logger.error(f"Непредвиденная ошибка в process_prompt_step: {e}")
@@ -300,7 +290,6 @@ if __name__ == "__main__":
     # Устанавливаем новый вебхук
     bot.set_webhook(url=WEBHOOK_URL)
     logger.info(f"Вебхук установлен: {WEBHOOK_URL}")
-
     # Запускаем Flask приложение
     # Render предоставит нам порт через переменную окружения PORT
     port = int(os.environ.get("PORT", 5000))
