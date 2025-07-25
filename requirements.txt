@@ -1,5 +1,5 @@
 pyTelegramBotAPI==4.27.0
 python-dotenv==1.1.1
 mistralai==1.9.2
-Pillow==11.3.0
+# Pillow==11.3.0 - не прямая зависимость
 Flask==3.0.0
