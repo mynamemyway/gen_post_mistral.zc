@@ -3,9 +3,12 @@
 Простой Telegram-бот, генерирующий текстовые посты и изображения с помощью **Mistral AI API**.  
 Использует `pyTelegramBotAPI`, `mistralai`, `python-dotenv`, и поддерживает логирование.
 
+Бот доступен по ссылке в телеграм [@content_genzc_bot](https://t.me/content_genzc_bot)
+
 <details>
 <summary>🖥 Развернуть демонстрационный скриншот</summary>
-<img width="1061" height="742" alt="image" src="https://github.com/user-attachments/assets/5aef9a07-2d83-4b06-8e06-9d40b327989a" />
+<img width="1061" height="797" alt="image" src="https://github.com/user-attachments/assets/f0ff17b2-1ae1-4b55-a096-ba24a788bfc6" />
+
 </details>
 
 ---
